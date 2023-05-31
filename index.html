@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>Kanban Board</title>
+</head>
+
+ <button id="add-column-btn">Добавить колонку</button>
+  <button id="create-task-btn">Создать задачу</button>
+
+<body>
+  <div class="board">
+    <div class="column" id="new-column">
+      <h3>Новые</h3>
+      <div class="tasks" id="new-tasks"></div>
+    </div>
+    <div class="column" id="in-progress-column">
+      <h3>В работе</h3>
+      <div class="tasks" id="in-progress-tasks"></div>
+    </div>
+    <div class="column" id="completed-column">
+      <h3>Завершенные</h3>
+      <div class="tasks" id="completed-tasks"></div>
+    </div>
+  </div>
+
+
+  <!-- Модальное окно создания задачи -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Создать задачу</h2>
+      <input id="task-name-input" type="text" placeholder="Введите название задачи">
+      <input id="due-date-input" type="date" placeholder="Срок исполнения">
+      <input id="label-input" type="text" placeholder="Лэйбл">
+      <input id="color-input" type="color">
+      <button id="create-task-modal-btn">Создать задачу</button>
+      <button id="cancel-task-modal-btn">Отмена</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно создания колонки -->
+  <div id="column-modal" class="modal">
+    <div class="modal-content">
+      <h2>Создать колонку</h2>
+      <input id="column-input" type="text" placeholder="Введите название колонки" />
+      <div>
+        <button id="create-column-modal-btn" class="btn">Создать колонку</button>
+        <button id="cancel-column-modal-btn" class="btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

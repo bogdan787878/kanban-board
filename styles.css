@@ -1,0 +1,101 @@
+body {
+  font-family: 'Google Sans', Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #141218;
+  color: #FFFBFE;
+}
+
+.board {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column {
+   display: inline-block;
+  vertical-align: top;
+  margin: 4px;
+  padding: 10px;
+  background-color: #2B2930;
+  border-radius: 8px;
+  min-height: 900px;
+  max-height: 100%;
+  flex: 01
+}
+
+.column h3 {
+  margin: 4px 0 16px;
+}
+
+.task {
+  background-color: #4A4458;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.task h4 {
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 300;
+  padding: 4px 8px;
+  border-radius: 100px;
+  margin: auto;
+}
+
+.due-date .material-icons {
+  font-size: 16px;
+}
+
+.due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #CCC2DC;
+}
+
+#add-column-btn {
+  margin-top: 10px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
