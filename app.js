@@ -44,10 +44,11 @@ function createColumn(columnId) {
   const column = document.createElement('div');
   column.classList.add('column');
   column.id = columnId;
-  column.innerHTML = `
-    <h3 data-column-id="${columnId}">${getColumnTitle(columnId)}</h3>
-    <div class="tasks"></div>
-  `;
+ column.innerHTML = `
+  <h3 data-column-id="${columnId}">${getColumnTitle(columnId)}</h3>
+  <div class="tasks"></div>
+`;
+
   return column;
 }
 
@@ -60,10 +61,11 @@ function getColumnTitle(columnId) {
   } else if (columnId === 'completed-column') {
     return 'Завершенные';
   } else {
-    
-    return columnId; // Возвращаем сам идентификатор, если нет соответствующего заголовка
+    const taskData = tasks[columnId];
+    return taskData && taskData.columnName ? taskData.columnName : columnId;
   }
 }
+
 
 
 // Получение задач из localStorage
@@ -91,13 +93,16 @@ function createTaskElement(taskId, taskName, dueDate, label) {
 
   const formattedDueDate = formatDate(dueDate); // Форматирование даты
 
-  task.innerHTML = `
-    <span class="due-date">
-      <i class="material-icons">calendar_today</i>
-      ${formattedDueDate}
-    </span>
-    <h4>${taskName}</h4>
-  `;
+task.innerHTML = `
+  <span class="due-date">
+    <i class="material-icons">calendar_today</i>
+    ${formattedDueDate}
+  </span>
+  <h4>${taskName}</h4>
+`;
+
+task.setAttribute('oncontextmenu', `showContextMenu(event, '${taskId}')`);
+
 
   const labelElement = document.createElement('span');
   labelElement.classList.add('label');
@@ -192,8 +197,6 @@ function handleCreateTaskModalClick() {
 
 
 
-
-
 // Обработчик события начала перетаскивания задачи
 function dragStart(event) {
   const taskId = event.target.id;
@@ -259,10 +262,16 @@ function handleCreateColumnModalClick() {
     updateColumns();
     columnInput.value = '';
     closeCreateColumnModal();
+    
     const columnTitle = document.querySelector(`h3[data-column-id="${newColumnId}"]`);
     columnTitle.innerText = columnName;
+
+    tasks[newColumnId] = { columnName: columnName };
+    saveTasksToLocalStorage();
   }
 }
+
+
 
 // Инициализация приложения
 function init() {
