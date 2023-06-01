@@ -91,18 +91,17 @@ function createTaskElement(taskId, taskName, dueDate, label) {
   task.draggable = true;
   task.addEventListener('dragstart', dragStart);
 
-  const formattedDueDate = formatDate(dueDate); // Форматирование даты
+  const formattedDueDate = dueDate ? formatDate(dueDate) : 'Нет срока'; // Замена значения dueDate
 
-task.innerHTML = `
-  <span class="due-date">
-    <i class="material-icons">calendar_today</i>
-    ${formattedDueDate}
-  </span>
-  <h4>${taskName}</h4>
-`;
+  task.innerHTML = `
+    <span class="due-date">
+      <i class="material-icons">calendar_today</i>
+      ${formattedDueDate}
+    </span>
+    <h4>${taskName}</h4>
+  `;
 
-task.setAttribute('oncontextmenu', `showContextMenu(event, '${taskId}')`);
-
+  task.setAttribute('oncontextmenu', `showContextMenu(event, '${taskId}')`);
 
   const labelElement = document.createElement('span');
   labelElement.classList.add('label');
@@ -119,6 +118,7 @@ task.setAttribute('oncontextmenu', `showContextMenu(event, '${taskId}')`);
 
   return task;
 }
+
 
 
 
@@ -270,6 +270,83 @@ function handleCreateColumnModalClick() {
     saveTasksToLocalStorage();
   }
 }
+
+// Открытие модального окна редактирования задачи
+function openEditTaskModal(taskId) {
+  const taskData = tasks[taskId];
+  const editTaskNameInput = document.getElementById('edit-task-name-input');
+  const editDueDateInput = document.getElementById('edit-due-date-input');
+  const editLabelInput = document.getElementById('edit-label-input');
+  const editColorInput = document.getElementById('edit-color-input');
+
+  editTaskNameInput.value = taskData.name;
+  editDueDateInput.value = taskData.dueDate;
+  editLabelInput.value = taskData.label;
+  editColorInput.value = taskData.labelColor;
+
+  const saveTaskBtn = document.getElementById('save-task-btn');
+  saveTaskBtn.addEventListener('click', () => {
+    updateTask(taskId, {
+      name: editTaskNameInput.value,
+      dueDate: editDueDateInput.value,
+      label: editLabelInput.value,
+      labelColor: editColorInput.value
+    });
+    closeEditTaskModal();
+  });
+
+  const cancelEditTaskBtn = document.getElementById('cancel-edit-task-btn');
+  cancelEditTaskBtn.addEventListener('click', () => {
+    closeEditTaskModal();
+  });
+
+  const editTaskModal = document.getElementById('edit-task-modal');
+  editTaskModal.style.display = 'block';
+}
+
+// Закрытие модального окна редактирования задачи
+function closeEditTaskModal() {
+  const editTaskModal = document.getElementById('edit-task-modal');
+  editTaskModal.style.display = 'none';
+}
+
+// Обновление атрибутов задачи
+function updateTask(taskId, updatedTaskData) {
+  tasks[taskId] = { ...tasks[taskId], ...updatedTaskData };
+  saveTasksToLocalStorage();
+  updateColumns();
+}
+
+// Показ контекстного меню
+function showContextMenu(event, taskId) {
+  event.preventDefault();
+
+  const contextMenu = document.getElementById('context-menu');
+  contextMenu.style.display = 'block';
+  contextMenu.style.left = `${event.clientX}px`;
+  contextMenu.style.top = `${event.clientY}px`;
+
+  const editMenuItem = document.getElementById('edit-menu-item');
+  editMenuItem.setAttribute('onclick', `openEditTaskModal('${taskId}')`);
+
+  const deleteMenuItem = document.getElementById('delete-menu-item');
+  deleteMenuItem.setAttribute('onclick', `deleteTask('${taskId}')`);
+
+  const removeContextMenu = () => {
+    contextMenu.style.display = 'none';
+    document.removeEventListener('click', removeContextMenu);
+  };
+
+  document.addEventListener('click', removeContextMenu);
+}
+
+// Удаление задачи
+function deleteTask(taskId) {
+  delete tasks[taskId];
+  saveTasksToLocalStorage();
+  updateColumns();
+}
+
 
 
 

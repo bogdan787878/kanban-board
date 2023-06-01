@@ -56,29 +56,33 @@
 
 <div id="context-menu" class="context-menu">
   <ul>
-<li id="edit-menu-item" onclick="editTask()">Редактировать</li>
-    <li id="delete-menu-item">Удалить</li>
-  </ul>
+<li id="edit-menu-item">
+  <span class="material-icons">edit</span> Редактировать
+</li>
+
+<li id="delete-menu-item">
+  <span class="material-icons">delete</span> Удалить
+</li>
 </div>
 
 
 <!-- Модальное окно редактирования задачи -->
-<div id="edit-modal" class="modal" style="display: none;">
+<div id="edit-task-modal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closeEditTaskModal()">&times;</span>
-    <h3>Редактирование задачи</h3>
-    <label for="edit-task-name-input">Наименование:</label>
-    <input type="text" id="edit-task-name-input" />
-    <label for="edit-due-date-input">Срок исполнения:</label>
-    <input type="date" id="edit-due-date-input" />
-    <label for="edit-label-input">Лейбл:</label>
-    <input type="text" id="edit-label-input" />
-    <label for="edit-color-input">Цвет лейбла:</label>
-    <input type="color" id="edit-color-input" />
-    <button id="save-edit-task-modal-btn" onclick="handleSaveEditTaskModalClick()">Сохранить</button>
-    <button id="edit-cancel-column-modal-btn" class="btn">Отмена</button>
+    <h2>Редактирование задачи</h2>
+    <label for="edit-task-name-input">Название задачи:</label>
+    <input type="text" id="edit-task-name-input">
+    <label for="edit-due-date-input">Срок выполнения:</label>
+    <input type="date" id="edit-due-date-input">
+    <label for="edit-label-input">Метка:</label>
+    <input type="text" id="edit-label-input">
+    <label for="edit-color-input">Цвет метки:</label>
+    <input type="color" id="edit-color-input">
+    <button id="save-task-btn">Сохранить</button>
+    <button id="cancel-edit-task-btn">Отмена</button>
   </div>
 </div>
+
 
 
   <script src="app.js"></script>
