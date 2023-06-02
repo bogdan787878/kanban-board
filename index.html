@@ -9,10 +9,19 @@
   <title>Kanban Board</title>
 </head>
 
+
+<body>
+
+<div class="sidebar">
+  <button id="create-project-btn">Создать проект</button>
+  <ul id="project-list">
+  </ul>
+</div>
+
  <button id="add-column-btn">Добавить колонку</button>
   <button id="create-task-btn">Создать задачу</button>
 
-<body>
+ <div class="project-board"> 
   <div class="board">
     <div class="column" id="new-column">
       <h3>Новые</h3>
@@ -27,20 +36,7 @@
       <div class="tasks" id="completed-tasks"></div>
     </div>
   </div>
-
-
-  <!-- Модальное окно создания задачи -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Создать задачу</h2>
-      <input id="task-name-input" type="text" placeholder="Введите название задачи">
-      <input id="due-date-input" type="date" placeholder="Срок исполнения">
-      <input id="label-input" type="text" placeholder="Лэйбл">
-      <input id="color-input" type="color">
-      <button id="create-task-modal-btn">Создать задачу</button>
-      <button id="cancel-task-modal-btn">Отмена</button>
-    </div>
-  </div>
+</div>
 
   <!-- Модальное окно создания колонки -->
   <div id="column-modal" class="modal">
@@ -48,7 +44,7 @@
       <h2>Создать колонку</h2>
       <input id="column-input" type="text" placeholder="Введите название колонки" />
       <div>
-        <button id="create-column-modal-btn" class="btn">Создать колонку</button>
+        <button id="create-column-modal-btn" class="btn">Сохранить</button>
         <button id="cancel-column-modal-btn" class="btn">Отмена</button>
       </div>
     </div>
@@ -66,23 +62,40 @@
 </div>
 
 
+
+  <!-- Модальное окно создания задачи -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Создать задачу</h2>
+    <div class="task-atributes"> 
+      <input class="modal-input" id="task-name-input" type="text" placeholder="Введите название задачи">
+      <textarea class="modal-input" id="description-input" placeholder="Введите описание задачи"></textarea>
+      <input class="modal-input" id="due-date-input" type="date" placeholder="Срок исполнения">
+      <div style="display: flex;"><input class="modal-input" id="label-input" type="text" placeholder="Лэйбл">
+      <input id="color-input" type="color"></div>
+    </div>
+      <button id="create-task-modal-btn">Сохранить</button>
+      <button id="cancel-task-modal-btn">Отмена</button>
+    </div>
+  </div>
+
 <!-- Модальное окно редактирования задачи -->
 <div id="edit-task-modal" class="modal">
   <div class="modal-content">
     <h2>Редактирование задачи</h2>
-    <label for="edit-task-name-input">Название задачи:</label>
-    <input type="text" id="edit-task-name-input">
-    <label for="edit-due-date-input">Срок выполнения:</label>
-    <input type="date" id="edit-due-date-input">
-    <label for="edit-label-input">Метка:</label>
-    <input type="text" id="edit-label-input">
-    <label for="edit-color-input">Цвет метки:</label>
-    <input type="color" id="edit-color-input">
-    <button id="save-task-btn">Сохранить</button>
-    <button id="cancel-edit-task-btn">Отмена</button>
+  <div class="task-atributes">  
+    <input class="modal-input" type="text" id="edit-task-name-input" placeholder="Название задачи">
+    <textarea class="modal-input" id="edit-description-input" placeholder="Введите описание задачи"></textarea>
+    <input class="modal-input" type="date" id="edit-due-date-input">
+  <div style="display: flex; align-items: center;">
+     <input type="text" id="edit-label-input" placeholder="Метка" class="modal-input">
+    <input type="color" id="edit-color-input" style="margin-left: 8px;">
   </div>
+  </div>
+   <button id="save-task-btn">Сохранить</button>
+    <button id="cancel-edit-task-btn">Отмена</button>
 </div>
-
+</div>
 
 
   <script src="app.js"></script>

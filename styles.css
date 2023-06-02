@@ -6,7 +6,41 @@ body {
   color: #FFFBFE;
 }
 
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #2B2930;
+  padding: 20px;
+}
+
+.project-item.active {
+  background-color: #4A4458;
+}
+
+
+
+#project-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+#project-list li {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+#project-list li.active{
+  background-color: #4A4458;
+}
+
+
+
+
 .board {
+  flex: 1;
   display: flex;
   justify-content: space-between;
 }
@@ -37,7 +71,7 @@ body {
 
 .task h4 {
   margin: 8px 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -74,15 +108,21 @@ body {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .modal-content {
-  background-color: #fefefe;
+  background-color: #2B2930;
   margin: 15% auto;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+  width: 30%;
+  border-radius: 12px;
+}
+
+.task-atributes input,
+.task-atributes textarea {
+  display: block;
+  margin-bottom: 10px;
 }
 
 .close {
@@ -119,17 +159,39 @@ body {
 }
 
 .context-menu li {
-  cursor: pointer;
-  padding: 5px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+cursor: pointer;
+padding: 5px 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+border-radius: 4px;
+margin: 4px;
+}
+
+
+.modal-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4A4458;
+  color: #FFFBFE;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.modal-input[type="date"]::placeholder {
+  color: #FFFBFE; /* Желаемый цвет шрифта плейсхолдера */
+}
+
+
+
+.context-menu li:hover {
+  background-color: #4A4458;
 }
 
 .context-menu span {
   font-size: 20px;
 }
 
-.context-menu li:hover {
-  background-color: #4A4458;
-}

@@ -1,3 +1,169 @@
+// Проекты
+let projects = [];
+
+// Текущий проект
+let currentProject = null;
+
+// Получение проектов из localStorage
+function getProjectsFromLocalStorage() {
+  const projectsData = localStorage.getItem('projects');
+  const currentProjectId = localStorage.getItem('currentProjectId');
+
+  if (projectsData) {
+    projects = JSON.parse(projectsData);
+  } else {
+    projects = [];
+  }
+
+  // Проверка наличия сохраненного идентификатора текущего проекта
+  if (currentProjectId) {
+    currentProject = projects.find(project => project.id === currentProjectId);
+  } else {
+    currentProject = null;
+  }
+}
+
+
+// Сохранение проектов в localStorage
+function saveProjectsToLocalStorage() {
+  localStorage.setItem('projects', JSON.stringify(projects));
+  localStorage.setItem('currentProjectId', currentProject ? currentProject.id : null); // Здесь изменение ключа на 'currentProjectId' и сохранение идентификатора текущего проекта
+}
+
+
+// Создание заголовка проекта внутри доски
+const board = document.querySelector('.project-board');
+const projectTitle = document.createElement('h2');
+
+// Получение заголовка проекта из localStorage
+function getProjectTitleFromLocalStorage() {
+  const projectTitleData = localStorage.getItem('projectTitle');
+  if (projectTitleData) {
+    projectTitle.innerText = projectTitleData;
+  }
+}
+
+// Сохранение заголовка проекта в localStorage
+function saveProjectTitleToLocalStorage() {
+  localStorage.setItem('projectTitle', projectTitle.innerText);
+}
+
+// Обновление заголовка проекта
+function updateProjectTitle(name) {
+  projectTitle.innerText = name;
+  saveProjectTitleToLocalStorage();
+}
+
+// Добавляем заголовок проекта в доску при загрузке страницы
+window.addEventListener('DOMContentLoaded', () => {
+  getProjectTitleFromLocalStorage();
+  board.prepend(projectTitle);
+});
+
+// Добавить обработчик двойного клика на заголовок проекта
+projectTitle.addEventListener('dblclick', () => {
+  const newProjectName = prompt('Введите новое название проекта:', projectTitle.innerText);
+  if (newProjectName) {
+    updateProjectTitle(newProjectName);
+    currentProject.name = newProjectName;
+    saveProjectsToLocalStorage();
+  }
+});
+
+// Создание проекта
+function createProject(name) {
+  const newProject = {
+    id: `project-${Date.now()}`,
+    name: name,
+    kanban: {
+      columns: ['new-column', 'in-progress-column', 'completed-column'],
+      tasks: {}
+    }
+  };
+
+  projects.push(newProject);
+  saveProjectsToLocalStorage();
+  setCurrentProject(newProject);
+  updateProjectList();
+  updateColumns();
+  updateProjectTitle(name);
+}
+
+// Добавляем обработчик двойного клика на название проекта в списке проектов
+projectTitle.addEventListener('dblclick', () => {
+  const newProjectName = prompt('Введите новое название проекта:', project.name);
+  if (newProjectName) {
+    project.name = newProjectName;
+    updateProjectList();
+    updateProjectTitle(newProjectName);
+    saveProjectsToLocalStorage();
+  }
+});
+
+
+
+
+
+function setCurrentProject(project) {
+  currentProject = project;
+  columns = project.kanban.columns;
+  tasks = project.kanban.tasks;
+  saveColumnsToLocalStorage();
+  saveTasksToLocalStorage();
+  saveProjectsToLocalStorage();
+  updateColumns();
+
+  // Сохранение идентификатора текущего проекта в localStorage
+  localStorage.setItem('currentProjectId', project.id);
+
+  // Изменение заголовка проекта
+  const projectTitle = document.querySelector('.project-board h2');
+  projectTitle.innerText = project.name;
+}
+
+
+
+// Обработчик клика на кнопку "Создать проект"
+function handleCreateProjectClick() {
+  const projectName = prompt('Введите название проекта:');
+  if (projectName) {
+    createProject(projectName);
+  }
+}
+
+// Обновление списка проектов
+function updateProjectList() {
+  const projectList = document.getElementById('project-list');
+  projectList.innerHTML = '';
+
+  for (const project of projects) {
+    const projectItem = document.createElement('li');
+    projectItem.innerText = project.name;
+    projectItem.addEventListener('click', () => {
+      setCurrentProject(project);
+
+      // Добавление класса "active" к выбранному проекту
+      const activeProjectItem = document.querySelector('li.active');
+      if (activeProjectItem) {
+        activeProjectItem.classList.remove('active');
+      }
+      projectItem.classList.add('active');
+    });
+
+    projectList.appendChild(projectItem);
+  }
+}
+
+
+
+// Добавляем обработчик клика на кнопку "Создать проект"
+const createProjectBtn = document.getElementById('create-project-btn');
+createProjectBtn.addEventListener('click', handleCreateProjectClick);
+
+
+
+
+
 // Колонки
 let columns = [];
 
@@ -19,6 +185,7 @@ function saveColumnsToLocalStorage() {
   localStorage.setItem('columns', JSON.stringify(columns));
 }
 
+
 // Обновление колонок
 function updateColumns() {
   const board = document.querySelector('.board');
@@ -34,10 +201,21 @@ function updateColumns() {
     for (const taskId in tasks) {
       if (tasks.hasOwnProperty(taskId) && tasks[taskId].column === columnId) {
         addTaskToColumn(taskId, columnId);
+
+        // Добавляем обработчик клика на задачу для открытия в новой вкладке
+        const taskElement = document.getElementById(taskId);
+        taskElement.addEventListener('click', () => {
+          openTaskInNewTab(taskId);
+        });
       }
     }
   }
+
+  saveColumnsToLocalStorage(); // Сохранение колонок в localStorage
 }
+
+
+
 
 // Создание колонки
 function createColumn(columnId) {
@@ -84,14 +262,14 @@ function saveTasksToLocalStorage() {
 }
 
 // Создание задачи
-function createTaskElement(taskId, taskName, dueDate, label) {
+function createTaskElement(taskId, taskName, dueDate, label, description) {
   const task = document.createElement('div');
   task.classList.add('task');
   task.id = taskId;
   task.draggable = true;
   task.addEventListener('dragstart', dragStart);
 
-  const formattedDueDate = dueDate ? formatDate(dueDate) : 'Нет срока'; // Замена значения dueDate
+  const formattedDueDate = dueDate ? formatDate(dueDate) : 'Нет срока';
 
   task.innerHTML = `
     <span class="due-date">
@@ -103,22 +281,25 @@ function createTaskElement(taskId, taskName, dueDate, label) {
 
   task.setAttribute('oncontextmenu', `showContextMenu(event, '${taskId}')`);
 
-  const labelElement = document.createElement('span');
-  labelElement.classList.add('label');
-  labelElement.innerText = label;
+  if (label) {
+    const labelElement = document.createElement('span');
+    labelElement.classList.add('label');
+    labelElement.innerText = label;
 
-  const taskData = tasks[taskId];
+    const taskData = tasks[taskId];
 
-  // Проверяем, есть ли у задачи сохраненный цвет метки
-  if (taskData && taskData.labelColor) {
-    labelElement.style.backgroundColor = taskData.labelColor;
+    if (taskData && taskData.labelColor) {
+      labelElement.style.backgroundColor = taskData.labelColor;
+    }
+
+    task.appendChild(labelElement);
   }
 
-  task.appendChild(labelElement);
+  // Добавляем описание задачи
+  task.dataset.description = description;
 
   return task;
 }
-
 
 
 
@@ -139,7 +320,13 @@ function addTaskToColumn(taskId, columnId) {
   tasksContainer.appendChild(task);
 }
 
+// Функция для открытия задачи в новой вкладке
+function openTaskInNewTab(taskId) {
+  const taskData = tasks[taskId];
 
+  const url = `task-details.html?taskId=${taskId}&taskName=${encodeURIComponent(taskData.name)}&dueDate=${encodeURIComponent(taskData.dueDate)}&label=${encodeURIComponent(taskData.label)}&description=${encodeURIComponent(taskData.description)}`;
+  window.open(url, '_blank');
+}
 
 // Обработчик клика на кнопку "Создать задачу"
 function handleCreateTaskClick() {
@@ -170,30 +357,36 @@ function handleCreateTaskModalClick() {
   const dueDateInput = document.getElementById('due-date-input');
   const labelInput = document.getElementById('label-input');
   const colorInput = document.getElementById('color-input');
+  const descriptionInput = document.getElementById('description-input'); // Добавлено описание задачи
 
   const taskName = taskInput.value.trim();
   const dueDate = dueDateInput.value;
   const label = labelInput.value.trim();
   const color = colorInput.value;
+  const description = descriptionInput.value.trim(); // Получаем значение описания задачи
 
   if (taskName !== '') {
-    const taskId = `task-${Date.now()}`; // Генерация уникального идентификатора задачи
+    const taskId = `task-${Date.now()}`;
     tasks[taskId] = {
       name: taskName,
       column: 'new-column',
       dueDate: dueDate,
       label: label,
-      labelColor: color // Сохраняем выбранный цвет метки
+      labelColor: color,
+      description: description // Добавляем описание в объект задачи
     };
     saveTasksToLocalStorage();
     addTaskToColumn(taskId, 'new-column');
     taskInput.value = '';
     dueDateInput.value = '';
     labelInput.value = '';
-    colorInput.value = ''; // Очищаем значение цветового инпута
+    colorInput.value = '';
+    descriptionInput.value = ''; // Очищаем поле ввода описания
     closeCreateTaskModal();
   }
 }
+
+
 
 
 
@@ -278,11 +471,15 @@ function openEditTaskModal(taskId) {
   const editDueDateInput = document.getElementById('edit-due-date-input');
   const editLabelInput = document.getElementById('edit-label-input');
   const editColorInput = document.getElementById('edit-color-input');
+  const editDescriptionInput = document.getElementById('edit-description-input'); // Добавлено поле ввода описания
+
 
   editTaskNameInput.value = taskData.name;
   editDueDateInput.value = taskData.dueDate;
   editLabelInput.value = taskData.label;
   editColorInput.value = taskData.labelColor;
+  editDescriptionInput.value = taskData.description ? taskData.description : ''; // Устанавливаем значение описания
+
 
   const saveTaskBtn = document.getElementById('save-task-btn');
   saveTaskBtn.addEventListener('click', () => {
@@ -348,13 +545,22 @@ function deleteTask(taskId) {
 }
 
 
-
-
 // Инициализация приложения
 function init() {
+  getProjectsFromLocalStorage();
   getColumnsFromLocalStorage();
   getTasksFromLocalStorage();
   updateColumns();
+  updateProjectList();
+
+  if (projects.length > 0) {
+    setCurrentProject(projects[0]);
+  } else {
+    createProject('Новый проект');
+  }
+
+  updateColumns();
+
 
   const addColumnBtn = document.getElementById('add-column-btn');
   addColumnBtn.addEventListener('click', handleAddColumnClick);
