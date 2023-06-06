@@ -116,10 +116,7 @@ function setCurrentProject(project) {
   // Сохранение идентификатора текущего проекта в localStorage
   localStorage.setItem('currentProjectId', project.id);
 
-  // Изменение заголовка проекта
-  const projectTitle = document.querySelector('.project-board h2');
-  projectTitle.innerText = project.name;
-}
+
 
 
 
